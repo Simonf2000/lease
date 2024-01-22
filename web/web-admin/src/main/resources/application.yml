@@ -22,3 +22,9 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+minio:
+  endpoint: http://192.168.6.100:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: minio-bucket
