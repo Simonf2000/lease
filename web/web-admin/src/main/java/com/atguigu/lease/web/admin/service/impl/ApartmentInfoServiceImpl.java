@@ -1,5 +1,7 @@
 package com.atguigu.lease.web.admin.service.impl;
 
+import com.atguigu.lease.common.exception.LeaseException;
+import com.atguigu.lease.common.result.ResultCodeEnum;
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.web.admin.mapper.ApartmentFacilityMapper;
@@ -18,6 +20,7 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import kotlin.Result;
 import kotlin.jvm.internal.Lambda;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,8 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     private ApartmentFeeValueService apartmentFeeValueService;
     @Autowired
     private ApartmentInfoMapper apartmentInfoMapper;
+    @Autowired
+    private RoomInfoService roomInfoService;
 
     @Override
     public void saveOrUpdateApartment(ApartmentSubmitVo apartmentSubmitVo) {
@@ -172,6 +177,50 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         adminApartmentDetailVo.setFeeValueVoList(feeValueVoList);
 
         return adminApartmentDetailVo;
+    }
+
+    /**
+    * @Description:
+     * 首先删除公寓信息,删除之前防止有孤儿数据产生，要进行判断是否有房间数据
+     * MyBatisPlus自带count方法可以计算房间数量
+     * 用异常流达到快速返回结果的目的
+    * @Param: [id]
+    * @return: void
+    * @Author: simonf
+    * @Date: 2024/1/23
+    */
+    @Override
+    public void customRemoveById(Long id) {
+
+        LambdaQueryWrapper<RoomInfo> roomQueryWrapper = new LambdaQueryWrapper<>();
+        roomQueryWrapper.eq(RoomInfo::getApartmentId, id);
+        Long count = roomInfoService.count(roomQueryWrapper);
+        if (count > 0) {
+         throw new LeaseException(ResultCodeEnum.DELETE_ERROR);
+        }
+
+        //删除公寓信息
+        removeById(id);
+        //1.删除GraphInfo
+        LambdaQueryWrapper<GraphInfo> graphQueryWrapper = new LambdaQueryWrapper<>();
+        graphQueryWrapper.eq(GraphInfo::getItemType, ItemType.APARTMENT);
+        graphQueryWrapper.eq(GraphInfo::getItemId, id);
+        graphInfoService.remove(graphQueryWrapper);
+
+        //2.删除ApartmentLabel
+        LambdaQueryWrapper<ApartmentLabel> labelQueryWrapper = new LambdaQueryWrapper<>();
+        labelQueryWrapper.eq(ApartmentLabel::getApartmentId, id);
+        apartmentLabelService.remove(labelQueryWrapper);
+
+        //3.删除ApartmentFacility
+        LambdaQueryWrapper<ApartmentFacility> facilityQueryWrapper = new LambdaQueryWrapper<>();
+        facilityQueryWrapper.eq(ApartmentFacility::getApartmentId, id);
+        apartmentFacilityService.remove(facilityQueryWrapper);
+
+        //4.删除ApartmentFeeValue
+        LambdaQueryWrapper<ApartmentFeeValue> feeQueryWrapper = new LambdaQueryWrapper<>();
+        feeQueryWrapper.eq(ApartmentFeeValue::getApartmentId, id);
+        apartmentFeeValueService.remove(feeQueryWrapper);
     }
 }
 
