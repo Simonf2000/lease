@@ -1,7 +1,11 @@
 package com.atguigu.lease.web.admin.service;
 
 import com.atguigu.lease.model.entity.GraphInfo;
+import com.atguigu.lease.model.enums.ItemType;
+import com.atguigu.lease.web.admin.vo.graph.GraphVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -10,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface GraphInfoService extends IService<GraphInfo> {
 
+    List<GraphVo> selectListByItemTypeAndId(ItemType apartment, Long id);
 }

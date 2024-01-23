@@ -2,11 +2,16 @@ package com.atguigu.lease.web.admin.service.impl;
 
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
+import com.atguigu.lease.web.admin.mapper.ApartmentFacilityMapper;
+import com.atguigu.lease.web.admin.mapper.ApartmentFeeValueMapper;
 import com.atguigu.lease.web.admin.mapper.ApartmentInfoMapper;
+import com.atguigu.lease.web.admin.mapper.ApartmentLabelMapper;
 import com.atguigu.lease.web.admin.service.*;
+import com.atguigu.lease.web.admin.vo.apartment.ApartmentDetailVo;
 import com.atguigu.lease.web.admin.vo.apartment.ApartmentItemVo;
 import com.atguigu.lease.web.admin.vo.apartment.ApartmentQueryVo;
 import com.atguigu.lease.web.admin.vo.apartment.ApartmentSubmitVo;
+import com.atguigu.lease.web.admin.vo.fee.FeeValueVo;
 import com.atguigu.lease.web.admin.vo.graph.GraphVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
@@ -14,6 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import kotlin.jvm.internal.Lambda;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -81,6 +87,7 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
 
 
         //2.插入配套列表
+
         List<Long> facilityInfoIdList = apartmentSubmitVo.getFacilityInfoIds();
         if (!CollectionUtils.isEmpty(facilityInfoIdList)) {
             ArrayList<ApartmentFacility> facilityList = new ArrayList<>();
@@ -131,6 +138,40 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     @Override
     public void customApartmentPage(Page<ApartmentItemVo> page, ApartmentQueryVo queryVo) {
         apartmentInfoMapper.queryApartmentPage(page, queryVo);
+    }
+
+    /**
+    * @Param: [id]
+    * @return: com.atguigu.lease.web.admin.vo.apartment.ApartmentDetailVo
+    * @Author: simonf
+    * @Date: 2024/1/23
+    */
+    @Override
+    public ApartmentDetailVo getApartmentDetailById(Long id) {
+        /*如果公寓信息不为空，把公寓信息关联的四张表的信息轮流查出来
+        装到Vo里面。*/
+        ApartmentInfo apartmentInfo = this.getById(id);
+        if (apartmentInfo == null) {
+            return null;
+        }
+        List<GraphVo> graphVoList = graphInfoService.selectListByItemTypeAndId(ItemType.APARTMENT, id);
+        //标签表通过公寓-标签关系中间表搭桥查询
+        List<LabelInfo> labelInfoList = apartmentLabelService.selectListByApartmentId(id);
+        //通过公寓-配套关系中间表搭桥查询
+        List<FacilityInfo> facilityInfoList = apartmentFacilityService.queryFacilityInfoList(id);
+        //杂费名称fee_key嵌套杂费值fee_value查询，通过公寓-杂费值关系表查询fee_value_id
+        List<FeeValueVo> feeValueVoList = apartmentFeeValueService.selectListByApartmentId(id);
+
+        ApartmentDetailVo adminApartmentDetailVo = new ApartmentDetailVo();
+
+        //使用BeanUtils给属性赋值
+        BeanUtils.copyProperties(apartmentInfo, adminApartmentDetailVo);
+        adminApartmentDetailVo.setGraphVoList(graphVoList);
+        adminApartmentDetailVo.setLabelInfoList(labelInfoList);
+        adminApartmentDetailVo.setFacilityInfoList(facilityInfoList);
+        adminApartmentDetailVo.setFeeValueVoList(feeValueVoList);
+
+        return adminApartmentDetailVo;
     }
 }
 

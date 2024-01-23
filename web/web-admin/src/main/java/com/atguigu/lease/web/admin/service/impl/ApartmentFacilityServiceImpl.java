@@ -1,10 +1,15 @@
 package com.atguigu.lease.web.admin.service.impl;
 
+import com.atguigu.lease.model.entity.FacilityInfo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.lease.model.entity.ApartmentFacility;
 import com.atguigu.lease.web.admin.service.ApartmentFacilityService;
 import com.atguigu.lease.web.admin.mapper.ApartmentFacilityMapper;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -14,7 +19,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApartmentFacilityServiceImpl extends ServiceImpl<ApartmentFacilityMapper, ApartmentFacility>
     implements ApartmentFacilityService{
-
+    @Autowired
+    ApartmentFacilityMapper apartmentFacilityMapper;
+    @Override
+    public List<FacilityInfo> queryFacilityInfoList(Long id) {
+        return apartmentFacilityMapper.queryFacilityInfoList(id);
+    }
 }
 
 

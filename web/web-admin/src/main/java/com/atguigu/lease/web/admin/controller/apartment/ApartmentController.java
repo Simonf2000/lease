@@ -26,26 +26,27 @@ public class ApartmentController {
 
     @Autowired
     private ApartmentInfoService apartmentInfoService;
+
     @Operation(summary = "保存或更新公寓信息")
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdate(@RequestBody ApartmentSubmitVo apartmentSubmitVo) {
-       apartmentInfoService.saveOrUpdateApartment(apartmentSubmitVo);
+        apartmentInfoService.saveOrUpdateApartment(apartmentSubmitVo);
         return Result.ok();
     }
 
     @Operation(summary = "根据条件分页查询公寓列表")
     @GetMapping("pageItem")
     public Result<IPage<ApartmentItemVo>> pageItem(@RequestParam long current, @RequestParam long size, ApartmentQueryVo queryVo) {
-        Page<ApartmentItemVo> page = new Page<>(current,size);
-        apartmentInfoService.customApartmentPage(page,queryVo);
-
+        Page<ApartmentItemVo> page = new Page<>(current, size);
+        apartmentInfoService.customApartmentPage(page, queryVo);
         return Result.ok(page);
     }
 
     @Operation(summary = "根据ID获取公寓详细信息")
     @GetMapping("getDetailById")
     public Result<ApartmentDetailVo> getDetailById(@RequestParam Long id) {
-        return Result.ok();
+        ApartmentDetailVo apartmentDetailVo = apartmentInfoService.getApartmentDetailById(id);
+        return Result.ok(apartmentDetailVo);
     }
 
     @Operation(summary = "根据id删除公寓信息")

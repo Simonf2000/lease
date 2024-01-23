@@ -1,10 +1,15 @@
 package com.atguigu.lease.web.admin.service.impl;
 
+import com.atguigu.lease.model.entity.LabelInfo;
+import com.atguigu.lease.web.admin.mapper.LabelInfoMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.lease.model.entity.ApartmentLabel;
 import com.atguigu.lease.web.admin.service.ApartmentLabelService;
 import com.atguigu.lease.web.admin.mapper.ApartmentLabelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -14,7 +19,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApartmentLabelServiceImpl extends ServiceImpl<ApartmentLabelMapper, ApartmentLabel>
     implements ApartmentLabelService{
-
+    @Autowired
+    private LabelInfoMapper labelInfoMapper;
+    @Override
+    public List<LabelInfo> selectListByApartmentId(Long id) {
+        return labelInfoMapper.queryLabelInfoList(id);
+    }
 }
 
 
