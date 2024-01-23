@@ -4,10 +4,13 @@ import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.web.admin.mapper.ApartmentInfoMapper;
 import com.atguigu.lease.web.admin.service.*;
+import com.atguigu.lease.web.admin.vo.apartment.ApartmentItemVo;
+import com.atguigu.lease.web.admin.vo.apartment.ApartmentQueryVo;
 import com.atguigu.lease.web.admin.vo.apartment.ApartmentSubmitVo;
 import com.atguigu.lease.web.admin.vo.graph.GraphVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import kotlin.jvm.internal.Lambda;
@@ -38,6 +41,8 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     private ApartmentLabelService apartmentLabelService;
     @Autowired
     private ApartmentFeeValueService apartmentFeeValueService;
+    @Autowired
+    private ApartmentInfoMapper apartmentInfoMapper;
 
     @Override
     public void saveOrUpdateApartment(ApartmentSubmitVo apartmentSubmitVo) {
@@ -47,7 +52,7 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
             // 删除GraphInfo
             LambdaQueryWrapper<GraphInfo> graphQueryWrapper = new LambdaQueryWrapper<>();
             graphQueryWrapper.eq(GraphInfo::getItemType, ItemType.APARTMENT);
-            graphQueryWrapper.eq(GraphInfo::getItemId,apartmentSubmitVo.getId());
+            graphQueryWrapper.eq(GraphInfo::getItemId, apartmentSubmitVo.getId());
             graphInfoService.remove(graphQueryWrapper);
             // 删除ApartmentFacility
             removeItemsByField(ApartmentFacility.class, ApartmentFacility::getApartmentId, apartmentSubmitVo.getId(), apartmentFacilityService);
@@ -61,7 +66,7 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
 
         //1.插入图片列表
         List<GraphVo> graphVoList = apartmentSubmitVo.getGraphVoList();
-        if (!CollectionUtils.isEmpty(graphVoList)){
+        if (!CollectionUtils.isEmpty(graphVoList)) {
             ArrayList<GraphInfo> graphInfoList = new ArrayList<>();
             for (GraphVo graphVo : graphVoList) {
                 GraphInfo graphInfo = new GraphInfo();
@@ -77,7 +82,7 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
 
         //2.插入配套列表
         List<Long> facilityInfoIdList = apartmentSubmitVo.getFacilityInfoIds();
-        if (!CollectionUtils.isEmpty(facilityInfoIdList)){
+        if (!CollectionUtils.isEmpty(facilityInfoIdList)) {
             ArrayList<ApartmentFacility> facilityList = new ArrayList<>();
             for (Long facilityId : facilityInfoIdList) {
                 ApartmentFacility apartmentFacility = ApartmentFacility.builder().apartmentId(apartmentSubmitVo.getId())
@@ -123,9 +128,10 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     }
 
 
-
-
-
+    @Override
+    public void customApartmentPage(Page<ApartmentItemVo> page, ApartmentQueryVo queryVo) {
+        apartmentInfoMapper.queryApartmentPage(page, queryVo);
+    }
 }
 
 
