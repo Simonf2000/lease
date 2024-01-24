@@ -2,13 +2,18 @@ package com.atguigu.lease.web.admin.controller.system;
 
 
 import com.atguigu.lease.common.result.Result;
+import com.atguigu.lease.model.entity.SystemPost;
 import com.atguigu.lease.model.entity.SystemUser;
 import com.atguigu.lease.model.enums.BaseStatus;
+import com.atguigu.lease.web.admin.service.SystemUserService;
 import com.atguigu.lease.web.admin.vo.system.user.SystemUserItemVo;
 import com.atguigu.lease.web.admin.vo.system.user.SystemUserQueryVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,9 +22,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/system/user")
 public class SystemUserController {
 
+    @Autowired
+    private SystemUserService systemUserService;
+
     @Operation(summary = "根据条件分页查询后台用户列表")
     @GetMapping("page")
     public Result<IPage<SystemUserItemVo>> page(@RequestParam long current, @RequestParam long size, SystemUserQueryVo queryVo) {
+
         return Result.ok();
     }
 
@@ -35,10 +44,20 @@ public class SystemUserController {
         return Result.ok();
     }
 
+    /**
+    * @Description: 返回true或false来标志用户是否可用
+    * @Param: [username]
+    * @return: com.atguigu.lease.common.result.Result<java.lang.Boolean>
+    * @Author: simonf
+    * @Date: 2024/1/24
+    */
     @Operation(summary = "判断后台用户名是否可用")
     @GetMapping("isUserNameAvailable")
     public Result<Boolean> isUsernameExists(@RequestParam String username) {
-        return Result.ok();
+        LambdaQueryWrapper<SystemUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SystemUser::getUsername, username);
+        long count = systemUserService.count(queryWrapper);
+        return Result.ok(count == 0);
     }
 
     @DeleteMapping("deleteById")
