@@ -48,6 +48,7 @@ public class RoomController {
     @Operation(summary = "根据id删除房间信息")
     @DeleteMapping("removeById")
     public Result removeById(@RequestParam Long id) {
+        roomInfoService.customRemoveRoomById(id);
         return Result.ok();
     }
 
