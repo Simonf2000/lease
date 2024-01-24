@@ -8,8 +8,11 @@ import com.atguigu.lease.model.enums.LeaseStatus;
 import com.atguigu.lease.web.admin.mapper.RoomInfoMapper;
 import com.atguigu.lease.web.admin.service.*;
 import com.atguigu.lease.web.admin.vo.graph.GraphVo;
+import com.atguigu.lease.web.admin.vo.room.RoomItemVo;
+import com.atguigu.lease.web.admin.vo.room.RoomQueryVo;
 import com.atguigu.lease.web.admin.vo.room.RoomSubmitVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,9 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
 
     @Autowired
     private LeaseAgreementService leaseAgreementService;
+
+    @Autowired
+    private RoomInfoMapper roomInfoMapper;
 
     /**
      * @Description: 先看看lease_agreement里面有没有租约(租约状态是2 ， 5)，没有租约再删除房间
@@ -216,6 +222,11 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
             }
             roomLeaseTermService.saveBatch(roomLeaseTerms);
         }
+    }
+
+    @Override
+    public void customRoomPage(Page<RoomItemVo> page, RoomQueryVo queryVo) {
+        roomInfoMapper.queryRoomPage(page, queryVo);
     }
 }
 
