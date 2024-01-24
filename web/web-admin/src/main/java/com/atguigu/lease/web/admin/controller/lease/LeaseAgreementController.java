@@ -4,11 +4,13 @@ package com.atguigu.lease.web.admin.controller.lease;
 import com.atguigu.lease.common.result.Result;
 import com.atguigu.lease.model.entity.LeaseAgreement;
 import com.atguigu.lease.model.enums.LeaseStatus;
+import com.atguigu.lease.web.admin.service.LeaseAgreementService;
 import com.atguigu.lease.web.admin.vo.agreement.AgreementQueryVo;
 import com.atguigu.lease.web.admin.vo.agreement.AgreementVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,9 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/agreement")
 public class LeaseAgreementController {
 
+    @Autowired
+    private LeaseAgreementService leaseAgreementService;
+
     @Operation(summary = "保存或修改租约信息")
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdate(@RequestBody LeaseAgreement leaseAgreement) {
+        leaseAgreementService.saveOrUpdate(leaseAgreement);
         return Result.ok();
     }
 
