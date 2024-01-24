@@ -16,4 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface RoomInfoService extends IService<RoomInfo> {
 
     void customRemoveRoomById(Long id);
+
+    void saveOrUpdateRoom(RoomSubmitVo roomSubmitVo);
 }
