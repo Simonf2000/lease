@@ -12,7 +12,6 @@ import java.util.List;
  * @Entity com.atguigu.lease.model.PaymentType
  */
 public interface PaymentTypeMapper extends BaseMapper<PaymentType> {
-
 }
 
 

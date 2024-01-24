@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.lease.model.entity.PaymentType;
 import com.atguigu.lease.web.admin.service.PaymentTypeService;
 import com.atguigu.lease.web.admin.mapper.PaymentTypeMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentTypeServiceImpl extends ServiceImpl<PaymentTypeMapper, PaymentType>
     implements PaymentTypeService{
-
 }
 
 

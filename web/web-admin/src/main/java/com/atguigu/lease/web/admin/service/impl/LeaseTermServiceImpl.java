@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class LeaseTermServiceImpl extends ServiceImpl<LeaseTermMapper, LeaseTerm>
     implements LeaseTermService{
-
+    @Override
+    public LeaseTerm selectById(Long leaseTermId) {
+        return this.getById(leaseTermId);
+    }
 }
 
 

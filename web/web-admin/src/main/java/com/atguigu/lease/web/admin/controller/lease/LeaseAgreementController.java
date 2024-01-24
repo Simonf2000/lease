@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -34,14 +35,28 @@ public class LeaseAgreementController {
     @GetMapping("page")
     public Result<IPage<AgreementVo>> page(@RequestParam long current, @RequestParam long size, AgreementQueryVo queryVo) {
         Page<AgreementVo> page = new Page<>(current, size);
-        leaseAgreementService.customLeaseAgreementPage(page,queryVo);
+        leaseAgreementService.customLeaseAgreementPage(page, queryVo);
         return Result.ok(page);
     }
 
+    /**
+    * @Description:
+     * AgreementVo含：
+     * lease_agreement表
+     * apartmentInfo
+     * roomInfo
+     * PaymentType
+     * LeaseTerm
+    * @Param: [id]
+    * @return: com.atguigu.lease.common.result.Result<com.atguigu.lease.web.admin.vo.agreement.AgreementVo>
+    * @Author: simonf
+    * @Date: 2024/1/24
+    */
     @Operation(summary = "根据id查询租约信息")
     @GetMapping(name = "getById")
     public Result<AgreementVo> getById(@RequestParam Long id) {
-        return Result.ok();
+        AgreementVo apartment = leaseAgreementService.getAgreementById(id);
+        return Result.ok(apartment);
     }
 
     @Operation(summary = "根据id删除租约信息")

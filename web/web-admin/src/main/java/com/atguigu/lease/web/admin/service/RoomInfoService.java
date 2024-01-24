@@ -23,4 +23,5 @@ public interface RoomInfoService extends IService<RoomInfo> {
     void customRoomPage(Page<RoomItemVo> page, RoomQueryVo queryVo);
 
     RoomDetailVo getRoomDetailById(Long id);
+
 }
