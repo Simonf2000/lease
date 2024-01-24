@@ -4,12 +4,18 @@ import com.atguigu.lease.common.exception.LeaseException;
 import com.atguigu.lease.common.result.ResultCodeEnum;
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
+import com.atguigu.lease.model.enums.LeaseStatus;
 import com.atguigu.lease.web.admin.mapper.RoomInfoMapper;
 import com.atguigu.lease.web.admin.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author liubo
@@ -46,17 +52,21 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     public void customRemoveRoomById(Long id) {
         //先看看lease_agreement里面有没有租约(租约状态是2，5)
 
-        // 1.看看房间里面有没有租约
+        // 1.看看房间里面有没有租约,(多表关联查询，根据传入的id查询Lease_Agreement表里的room_id)
         LambdaQueryWrapper<LeaseAgreement> leaseAgreementIfNull = new LambdaQueryWrapper<>();
         leaseAgreementIfNull.eq(LeaseAgreement::getRoomId, id);
         Long count = leaseAgreementService.count(leaseAgreementIfNull);
 
-        // 2.看看租约状态
-        LambdaQueryWrapper<LeaseAgreement> leaseAgreementQueryWrapper = new LambdaQueryWrapper<>();
-        leaseAgreementQueryWrapper.eq(LeaseAgreement::getStatus, 2);
-        leaseAgreementQueryWrapper.eq(LeaseAgreement::getStatus, 5);
         if (count > 0) {
-            throw new LeaseException(ResultCodeEnum.DELETE_ERROR);
+            // 2.看看租约状态
+            LambdaQueryWrapper<LeaseAgreement> leaseAgreementQueryWrapper = new LambdaQueryWrapper<>();
+            leaseAgreementQueryWrapper.in(LeaseAgreement::getStatus, LeaseStatus.SIGNED,LeaseStatus.WITHDRAWING);
+            List<LeaseAgreement> list = leaseAgreementService.list(leaseAgreementQueryWrapper);
+            //3.如果租约还有且状态为(2,5)抛异常
+            System.out.println(list+"这是租约相关对象");
+            if (!list.isEmpty()) {
+                throw new LeaseException(ResultCodeEnum.DELETE_ERROR);
+            }
         }
 
         //1.删除RoomInfo
@@ -92,6 +102,8 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
         LambdaQueryWrapper<RoomLeaseTerm> termQueryWrapper = new LambdaQueryWrapper<>();
         termQueryWrapper.eq(RoomLeaseTerm::getRoomId, id);
         roomLeaseTermService.remove(termQueryWrapper);
+
+
     }
 }
 
