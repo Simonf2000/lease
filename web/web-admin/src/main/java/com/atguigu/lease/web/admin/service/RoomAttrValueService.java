@@ -1,7 +1,10 @@
 package com.atguigu.lease.web.admin.service;
 
 import com.atguigu.lease.model.entity.RoomAttrValue;
+import com.atguigu.lease.web.admin.vo.attr.AttrValueVo;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface RoomAttrValueService extends IService<RoomAttrValue> {
 
+    List<AttrValueVo> selectListByRoomId(Long id);
 }

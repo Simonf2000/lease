@@ -1,7 +1,10 @@
 package com.atguigu.lease.web.admin.service;
 
+import com.atguigu.lease.model.entity.PaymentType;
 import com.atguigu.lease.model.entity.RoomPaymentType;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface RoomPaymentTypeService extends IService<RoomPaymentType> {
 
+    List<PaymentType> selectListByRoomId(Long id);
 }

@@ -7,7 +7,9 @@ import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.model.enums.LeaseStatus;
 import com.atguigu.lease.web.admin.mapper.RoomInfoMapper;
 import com.atguigu.lease.web.admin.service.*;
+import com.atguigu.lease.web.admin.vo.attr.AttrValueVo;
 import com.atguigu.lease.web.admin.vo.graph.GraphVo;
+import com.atguigu.lease.web.admin.vo.room.RoomDetailVo;
 import com.atguigu.lease.web.admin.vo.room.RoomItemVo;
 import com.atguigu.lease.web.admin.vo.room.RoomQueryVo;
 import com.atguigu.lease.web.admin.vo.room.RoomSubmitVo;
@@ -15,7 +17,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -49,6 +53,14 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
 
     @Autowired
     private RoomInfoMapper roomInfoMapper;
+    @Lazy
+    @Autowired
+    private ApartmentInfoService apartmentInfoService;
+    @Autowired
+    private FacilityInfoService facilityInfoService;
+    @Autowired
+    private LabelInfoService labelInfoService;
+
 
     /**
      * @Description: 先看看lease_agreement里面有没有租约(租约状态是2 ， 5)，没有租约再删除房间
@@ -227,6 +239,47 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     @Override
     public void customRoomPage(Page<RoomItemVo> page, RoomQueryVo queryVo) {
         roomInfoMapper.queryRoomPage(page, queryVo);
+    }
+
+    @Override
+    public RoomDetailVo getRoomDetailById(Long id) {
+        //1.查询RoomInfo
+        RoomInfo roomInfo = roomInfoMapper.selectById(id);
+
+        //2.查询所属公寓信息
+        ApartmentInfo apartmentInfo = apartmentInfoService.getApartmentDetailById(roomInfo.getApartmentId());
+
+        //3.查询graphInfoList
+        List<GraphVo> graphVoList = graphInfoService.selectListByItemTypeAndId(ItemType.ROOM, id);
+
+        //4.查询attrValueList
+        List<AttrValueVo> attrvalueVoList = roomAttrValueService.selectListByRoomId(id);
+
+        //5.查询facilityInfoList
+        List<FacilityInfo> facilityInfoList = facilityInfoService.selectListByRoomId(id);
+
+        //6.查询labelInfoList
+        List<LabelInfo> labelInfoList =labelInfoService.selectListByRoomId(id);
+
+        //7.查询paymentTypeList
+        List<PaymentType> paymentTypeList = roomPaymentTypeService.selectListByRoomId(id);
+
+        //8.查询leaseTermList
+        List<LeaseTerm> leaseTermList = roomLeaseTermService.selectListByRoomId(id);
+
+
+        RoomDetailVo adminRoomDetailVo = new RoomDetailVo();
+        BeanUtils.copyProperties(roomInfo, adminRoomDetailVo);
+
+        adminRoomDetailVo.setApartmentInfo(apartmentInfo);
+        adminRoomDetailVo.setGraphVoList(graphVoList);
+        adminRoomDetailVo.setAttrValueVoList(attrvalueVoList);
+        adminRoomDetailVo.setFacilityInfoList(facilityInfoList);
+        adminRoomDetailVo.setLabelInfoList(labelInfoList);
+        adminRoomDetailVo.setPaymentTypeList(paymentTypeList);
+        adminRoomDetailVo.setLeaseTermList(leaseTermList);
+
+        return adminRoomDetailVo;
     }
 }
 

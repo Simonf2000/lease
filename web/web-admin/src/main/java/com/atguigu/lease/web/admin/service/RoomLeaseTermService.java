@@ -1,7 +1,10 @@
 package com.atguigu.lease.web.admin.service;
 
+import com.atguigu.lease.model.entity.LeaseTerm;
 import com.atguigu.lease.model.entity.RoomLeaseTerm;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface RoomLeaseTermService extends IService<RoomLeaseTerm> {
 
+    List<LeaseTerm> selectListByRoomId(Long id);
 }

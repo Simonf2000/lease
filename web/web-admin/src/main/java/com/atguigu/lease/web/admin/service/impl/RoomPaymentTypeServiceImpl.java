@@ -1,10 +1,14 @@
 package com.atguigu.lease.web.admin.service.impl;
 
+import com.atguigu.lease.model.entity.PaymentType;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.lease.model.entity.RoomPaymentType;
 import com.atguigu.lease.web.admin.service.RoomPaymentTypeService;
 import com.atguigu.lease.web.admin.mapper.RoomPaymentTypeMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -14,7 +18,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoomPaymentTypeServiceImpl extends ServiceImpl<RoomPaymentTypeMapper, RoomPaymentType>
     implements RoomPaymentTypeService{
-
+    @Autowired
+    private RoomPaymentTypeMapper roomPaymentTypeMapper;
+    @Override
+    public List<PaymentType> selectListByRoomId(Long id) {
+        return roomPaymentTypeMapper.selectListByRoomId(id);
+    }
 }
 
 

@@ -23,4 +23,5 @@ public interface ApartmentInfoService extends IService<ApartmentInfo> {
     ApartmentDetailVo getApartmentDetailById(Long id);
 
     void customRemoveById(Long id);
+
 }

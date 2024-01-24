@@ -15,6 +15,7 @@ import java.util.List;
 public interface LabelInfoMapper extends BaseMapper<LabelInfo> {
 
     List<LabelInfo> queryLabelInfoList(Long id);
+
 }
 
 

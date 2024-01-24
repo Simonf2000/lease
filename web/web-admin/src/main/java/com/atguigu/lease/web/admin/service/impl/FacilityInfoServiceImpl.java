@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.atguigu.lease.model.entity.FacilityInfo;
 import com.atguigu.lease.web.admin.service.FacilityInfoService;
 import com.atguigu.lease.web.admin.mapper.FacilityInfoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author liubo
@@ -14,7 +17,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class FacilityInfoServiceImpl extends ServiceImpl<FacilityInfoMapper, FacilityInfo>
     implements FacilityInfoService{
-
+    @Autowired
+    private FacilityInfoMapper facilityInfoMapper;
+    @Override
+    public List<FacilityInfo> selectListByRoomId(Long id) {
+        return facilityInfoMapper.queryFacilityInfoList(id);
+    }
 }
 
 
