@@ -26,6 +26,9 @@ springdoc:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      update-strategy: not_empty
 
 minio:
   endpoint: http://192.168.6.100:9000
