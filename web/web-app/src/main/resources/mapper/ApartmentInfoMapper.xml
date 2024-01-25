@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.lease.web.app.mapper.ApartmentInfoMapper">
+
+    <resultMap id="apartmentItemMap" type="com.atguigu.lease.web.app.vo.apartment.ApartmentItemVo" autoMapping="true">
+        <id property="id" column="id"/>
+        <association property="minRent" javaType="decimal" select="selectMinRentByApartmentId" column="id"/>
+        <collection property="graphVoList" ofType="com.atguigu.lease.model.entity.GraphInfo"
+                    select="selectGraphListByApartmentId" column="id" autoMapping="true">
+
+        </collection>
+        <collection property="labelInfoList" ofType="com.atguigu.lease.model.entity.LabelInfo"
+                    select="selectLabelListByApartmentId" column="id" autoMapping="true">
+
+        </collection>
+    </resultMap>
+
+
+    <select id="selectApartmentItemVoById" resultMap="apartmentItemMap">
+        select id,
+               name,
+               introduction,
+               district_id,
+               district_name,
+               city_id,
+               city_name,
+               province_id,
+               province_name,
+               address_detail,
+               latitude,
+               longitude,
+               phone,
+               is_release
+        from apartment_info
+        where id = #{apartmentId}
+    </select>
+
+    <select id="selectMinRentByApartmentId" resultType="decimal">
+        select min(rent) min_rent
+        from room_info
+        where apartment_id = #{id}
+          and is_deleted = 0
+          and is_release = 1
+    </select>
+
+    <select id="selectGraphListByApartmentId" resultType="com.atguigu.lease.model.entity.GraphInfo">
+        select id,
+               name,
+               item_type,
+               item_id,
+               url
+        from graph_info
+        where is_deleted = 0
+          and item_type = 1
+          and item_id = #{id}
+    </select>
+
+    <select id="selectLabelListByApartmentId" resultType="com.atguigu.lease.model.entity.LabelInfo">
+        select id,
+               type,
+               name
+        from label_info
+        where is_deleted = 0
+          and id in (select label_id
+                     from apartment_label
+                     where is_deleted = 0
+                       and apartment_id = #{id})
+    </select>
+    <select id="selectApartmentById" resultType="com.atguigu.lease.model.entity.ApartmentInfo">
+        select id,
+               name,
+               introduction,
+               district_id,
+               district_name,
+               city_id,
+               city_name,
+               province_id,
+               province_name,
+               address_detail,
+               latitude,
+               longitude,
+               phone,
+               is_release,
+               is_deleted
+        from apartment_info
+        where id = #{id}
+    </select>
+</mapper>

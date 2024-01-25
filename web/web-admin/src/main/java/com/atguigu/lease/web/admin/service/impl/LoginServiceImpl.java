@@ -36,13 +36,24 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private SystemUserService systemUserService;
 
+    /**
+     * @Description:
+     * 公共方法，用于获取验证码
+     * @Param: []
+     * @return: com.atguigu.lease.web.admin.vo.login.CaptchaVo
+     * @Author: simonf
+     * @Date: 2024/1/25
+     */
     @Override
     public CaptchaVo getCaptcha() {
+        //用于生成验证码，specCaptcha是一个特定类型的验证码，接受三个参数：1.宽度，2.高度，3.字符数量
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);
         specCaptcha.setCharType(Captcha.TYPE_DEFAULT);
 
         String code = specCaptcha.text().toLowerCase();
+        //生成一个唯一的key，用于在Redis中存储验证码。
         String key = RedisConstant.ADMIN_LOGIN_PREFIX + UUID.randomUUID();
+       //将验证码转换成为Base64编码的字符串，用于在前端显示
         String image = specCaptcha.toBase64();
         redisTemplate.opsForValue().set(key, code, RedisConstant.ADMIN_LOGIN_CAPTCHA_TTL_SEC, TimeUnit.SECONDS);
 
@@ -60,6 +71,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String login(LoginVo loginVo) {
+        //用算法计算一个密码方便测试:
+     //   System.out.println(DigestUtils.sha256Hex("123456"));
+
         //1.判断是否输入了验证码
         if (!StringUtils.hasText(loginVo.getCaptchaCode())) {
             throw new LeaseException(ResultCodeEnum.ADMIN_CAPTCHA_CODE_NOT_FOUND);

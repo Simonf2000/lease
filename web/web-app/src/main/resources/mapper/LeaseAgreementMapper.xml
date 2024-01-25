@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.lease.web.app.mapper.LeaseAgreementMapper">
+
+    <resultMap id="agreementItemVoMap" type="com.atguigu.lease.web.app.vo.agreement.AgreementItemVo" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="roomGraphVoList" ofType="com.atguigu.lease.web.app.vo.graph.GraphVo" autoMapping="true"/>
+    </resultMap>
+
+    <select id="listItem" resultMap="agreementItemVoMap">
+        select la.id,
+               la.status lease_status,
+               la.lease_start_date,
+               la.lease_end_date,
+               la.source_type,
+               la.rent,
+               ai.name   apartment_name,
+               ri.room_number,
+               gi.name,
+               gi.url,
+               la.status=2 and cnt.signed=1 and cnt.renewing=0 is_renewable
+        from lease_agreement la
+                 left join apartment_info ai on la.apartment_id = ai.id
+                 left join room_info ri on la.room_id = ri.id
+                 left join graph_info gi on ri.id = gi.item_id and item_type = 2
+                 left join (select sum(if(status = 2, 1, 0)) signed,
+                                   sum(if(status = 7, 1, 0)) renewing
+                            from lease_agreement
+                            where is_deleted = 0
+                              and phone = #{phone}) cnt on true
+        where la.is_deleted = 0
+          and gi.is_deleted = 0
+          and la.phone = #{phone}
+    </select>
+</mapper>
