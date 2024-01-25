@@ -36,7 +36,8 @@ public class SystemUserController {
     @Operation(summary = "根据ID查询后台用户信息")
     @GetMapping("getById")
     public Result<SystemUserItemVo> getById(@RequestParam Long id) {
-        return Result.ok();
+        SystemUserItemVo systemUser = systemUserService.getSystemUserById(id);
+        return Result.ok(systemUser);
     }
 
     @Operation(summary = "保存或更新后台用户信息")
