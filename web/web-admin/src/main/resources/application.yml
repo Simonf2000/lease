@@ -20,6 +20,11 @@ spring:
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
+  data:
+    redis:
+      host: 192.168.6.100
+      port: 6379
+      database: 0
 springdoc:
   default-flat-param-object: true
 #用于打印框架生成的sql语句，便于调试
@@ -36,3 +41,8 @@ minio:
   secret-key: minioadmin
   bucket-name: minio-bucket
 
+admin:
+  auth:
+    path-patterns:
+      include: /admin/**
+      exclude: /admin/login/**
