@@ -1,8 +1,5 @@
 package com.atguigu.lease.web.app.controller.login;
 
-
-
-import com.atguigu.lease.common.context.LoginUserContext;
 import com.atguigu.lease.common.result.Result;
 import com.atguigu.lease.web.app.service.LoginService;
 import com.atguigu.lease.web.app.vo.user.LoginVo;
@@ -17,9 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/app/")
 public class LoginController {
 
+    @Autowired
+    private LoginService loginService;
     @GetMapping("login/getCode")
     @Operation(summary = "获取短信验证码")
     public Result getCode(@RequestParam String phone) {
+        loginService.sendCode(phone);
         return Result.ok();
     }
 

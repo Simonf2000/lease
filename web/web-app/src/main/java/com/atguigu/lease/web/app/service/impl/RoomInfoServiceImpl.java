@@ -1,6 +1,5 @@
 package com.atguigu.lease.web.app.service.impl;
 
-import com.atguigu.lease.common.context.LoginUserContext;
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.model.enums.LeaseStatus;
