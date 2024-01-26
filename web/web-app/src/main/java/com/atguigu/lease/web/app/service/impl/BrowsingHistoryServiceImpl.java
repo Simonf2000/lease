@@ -25,37 +25,7 @@ import java.util.Date;
 public class BrowsingHistoryServiceImpl extends ServiceImpl<BrowsingHistoryMapper, BrowsingHistory>
         implements BrowsingHistoryService {
 
-    @Autowired
-    private BrowsingHistoryMapper browsingHistoryMapper;
 
-    @Override
-    public IPage<HistoryItemVo> pageItem(Page<HistoryItemVo> page, Long userId) {
-        return browsingHistoryMapper.pageItem(page, userId);
-    }
-
-    @Override
-    @Async
-    public void saveBrowsingHistory(Long userId, Long roomId) {
-
-        log.info("保存浏览历史");
-
-        LambdaQueryWrapper<BrowsingHistory> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(BrowsingHistory::getUserId, userId);
-        queryWrapper.eq(BrowsingHistory::getRoomId, roomId);
-        BrowsingHistory browsingHistory = browsingHistoryMapper.selectOne(queryWrapper);
-
-        if (browsingHistory != null) {
-            browsingHistory.setBrowseTime(new Date());
-            browsingHistoryMapper.updateById(browsingHistory);
-        } else {
-            BrowsingHistory newHistory = new BrowsingHistory();
-            newHistory.setRoomId(roomId);
-            newHistory.setUserId(userId);
-            newHistory.setBrowseTime(new Date());
-            browsingHistoryMapper.insert(newHistory);
-        }
-
-    }
 }
 
 

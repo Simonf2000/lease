@@ -14,7 +14,4 @@ import java.util.List;
 */
 public interface LeaseAgreementService extends IService<LeaseAgreement> {
 
-    List<AgreementItemVo> listItem(String phone);
-
-    AgreementDetailVo getDetailById(Long id);
 }

@@ -21,30 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/app/room")
 public class RoomController {
 
-    @Autowired
-    RoomInfoService service;
-
     @Operation(summary = "分页查询房间列表")
     @GetMapping("pageItem")
     public Result<IPage<RoomItemVo>> pageItem(@RequestParam long current, @RequestParam long size, RoomQueryVo queryVo) {
-        IPage<RoomItemVo> page = new Page<>(current, size);
-        IPage<RoomItemVo> list = service.pageItem(page, queryVo);
-        return Result.ok(list);
+        return Result.ok();
     }
 
     @Operation(summary = "根据id获取房间的详细信息")
     @GetMapping("getDetailById")
     public Result<RoomDetailVo> getDetailById(@RequestParam Long id) {
-        RoomDetailVo roomDetailVo = service.getDetailById(id);
-        return Result.ok(roomDetailVo);
+        return Result.ok();
     }
 
     @Operation(summary = "根据公寓id分页查询房间列表")
     @GetMapping("pageItemByApartmentId")
     public Result<IPage<RoomItemVo>> pageItemByApartmentId(@RequestParam long current, @RequestParam long size, @RequestParam Long id) {
-        Page<RoomItemVo> page = new Page<>(current, size);
-        IPage<RoomItemVo> list = service.pageItemByApartmentId(page, id);
-        return Result.ok(list);
+        return Result.ok();
     }
-
 }

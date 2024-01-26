@@ -4,39 +4,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.lease.web.app.mapper.BrowsingHistoryMapper">
 
-    <resultMap id="historyItemVoMap" type="com.atguigu.lease.web.app.vo.history.HistoryItemVo" autoMapping="true">
-        <id property="id" column="id"/>
-        <result property="roomId" column="room_id"/>
-        <collection property="roomGraphVoList" ofType="com.atguigu.lease.web.app.vo.graph.GraphVo"
-                    select="selectGraphListByRoomId" column="room_id" autoMapping="true">
-        </collection>
-    </resultMap>
-
-    <select id="pageItem" resultMap="historyItemVoMap">
-        select bh.id,
-               bh.browse_time,
-               bh.user_id,
-               ri.id   room_id,
-               ri.room_number,
-               ri.rent,
-               ai.name apartment_name,
-               ai.province_name,
-               ai.city_name,
-               ai.district_name
-        from browsing_history bh
-                 left join room_info ri on bh.room_id = ri.id
-                 left join apartment_info ai on ri.apartment_id = ai.id
-        where bh.is_deleted = 0
-          and bh.user_id = #{userId}
-        order by bh.browse_time desc
-    </select>
-
-    <select id="selectGraphListByRoomId" resultType="com.atguigu.lease.web.app.vo.graph.GraphVo">
-        select name,
-               url
-        from graph_info
-        where is_deleted = 0
-          and item_type = 2
-          and item_id = #{room_id}
-    </select>
 </mapper>

@@ -43,11 +43,13 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
     @Override
     public SystemUserItemVo getSystemUserById(Long id) {
         SystemUser systemUser = super.getById(id);
+        //查到的密码不返回前端
+        systemUser.setPassword(null);
 
         SystemPost systemPost = systemPostService.getById(systemUser.getPostId());
         SystemUserItemVo systemUserItemVo = new SystemUserItemVo();
-        BeanUtils.copyProperties(systemPost, systemUserItemVo);
-        systemUserItemVo.setPostName(systemUserItemVo.getPostName());
+        BeanUtils.copyProperties(systemUser, systemUserItemVo);
+        systemUserItemVo.setPostName(systemPost.getName());
 
         return systemUserItemVo;
     }

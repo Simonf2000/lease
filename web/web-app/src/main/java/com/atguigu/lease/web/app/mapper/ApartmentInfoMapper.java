@@ -14,11 +14,7 @@ import java.math.BigDecimal;
 */
 public interface ApartmentInfoMapper extends BaseMapper<ApartmentInfo> {
 
-    ApartmentItemVo selectApartmentItemVoById(Long apartmentId);
 
-    ApartmentInfo selectApartmentById(Long id);
-
-    BigDecimal selectMinRentByApartmentId(Long id);
 }
 
 

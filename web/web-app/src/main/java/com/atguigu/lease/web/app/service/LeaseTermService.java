@@ -12,5 +12,4 @@ import java.util.List;
 */
 public interface LeaseTermService extends IService<LeaseTerm> {
 
-    List<LeaseTerm> listByRoomId(Long id);
 }

@@ -4,6 +4,7 @@ import com.atguigu.lease.common.constant.RedisConstant;
 import com.atguigu.lease.common.exception.LeaseException;
 import com.atguigu.lease.common.result.ResultCodeEnum;
 import com.atguigu.lease.common.utils.JwtUtil;
+import com.atguigu.lease.common.utils.ThreadLocalUtils;
 import com.atguigu.lease.model.entity.SystemUser;
 import com.atguigu.lease.model.enums.BaseStatus;
 import com.atguigu.lease.web.admin.mapper.SystemUserMapper;
@@ -52,6 +53,7 @@ public class LoginServiceImpl implements LoginService {
 
         String code = specCaptcha.text().toLowerCase();
         //生成一个唯一的key，用于在Redis中存储验证码。
+        //admin:longin + UUID
         String key = RedisConstant.ADMIN_LOGIN_PREFIX + UUID.randomUUID();
        //将验证码转换成为Base64编码的字符串，用于在前端显示
         String image = specCaptcha.toBase64();
@@ -102,14 +104,27 @@ public class LoginServiceImpl implements LoginService {
             throw new LeaseException(ResultCodeEnum.ADMIN_ACCOUNT_DISABLED_ERROR);
         }
 
+        String md5Password = DigestUtils.md5Hex(loginVo.getPassword());
         //5.校验用户密码
-        if (!systemUser.getPassword().equals(DigestUtils.sha256Hex(loginVo.getPassword()))) {
+        if (!md5Password.equals(systemUser.getPassword())) {
             throw new LeaseException(ResultCodeEnum.ADMIN_ACCOUNT_ERROR);
         }
 
         //6.创建并返回TOKEN
         return JwtUtil.createToken(systemUser.getId(), systemUser.getUsername());
+    }
 
+    @Override
+    public SystemUserInfoVo info(String accountToken) {
+        String username = ThreadLocalUtils.get();
+        LambdaQueryWrapper<SystemUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SystemUser::getUsername, username);
+        SystemUser systemUser = systemUserService.getOne(queryWrapper);
+
+        SystemUserInfoVo systemUserInfoVo = new SystemUserInfoVo();
+        systemUserInfoVo.setName(systemUser.getName());
+        systemUserInfoVo.setAvatarUrl(systemUser.getAvatarUrl());
+        return systemUserInfoVo;
 
     }
 }
