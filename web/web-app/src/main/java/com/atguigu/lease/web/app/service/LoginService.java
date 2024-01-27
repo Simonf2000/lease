@@ -7,4 +7,6 @@ public interface LoginService {
 
 
     void sendCode(String phone);
+
+    String login(LoginVo loginVo);
 }
