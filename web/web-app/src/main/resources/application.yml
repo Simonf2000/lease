@@ -31,9 +31,11 @@ springdoc:
 
 aliyun:
   sms:
-    access-key-id: <access-key-id>
-    access-key-secret: <access-key-secret>
+    access-key-id: asd
+    access-key-secret: asd
     endpoint: dysmsapi.aliyuncs.com
+    #    access-key-id: <access-key-id>
+    #    access-key-secret: <access-key-secret>
 
 minio:
   endpoint: http://192.168.6.100:9000
