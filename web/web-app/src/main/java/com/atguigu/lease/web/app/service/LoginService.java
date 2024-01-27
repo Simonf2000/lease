@@ -9,4 +9,6 @@ public interface LoginService {
     void sendCode(String phone);
 
     String login(LoginVo loginVo);
+
+    UserInfoVo getUserInfoId(Long userId);
 }
