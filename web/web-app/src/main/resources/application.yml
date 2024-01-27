@@ -25,6 +25,8 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    lazy-loading-enabled: false
+    aggressive-lazy-loading: false
 
 springdoc:
   default-flat-param-object: true
