@@ -7,6 +7,7 @@ import com.atguigu.lease.web.app.service.LeaseAgreementService;
 import com.atguigu.lease.web.app.vo.agreement.AgreementDetailVo;
 import com.atguigu.lease.web.app.vo.agreement.AgreementItemVo;
 import com.atguigu.lease.web.app.vo.graph.GraphVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import java.util.List;
 @Service
 public class LeaseAgreementServiceImpl extends ServiceImpl<LeaseAgreementMapper, LeaseAgreement>
         implements LeaseAgreementService {
-
 
 }
 
