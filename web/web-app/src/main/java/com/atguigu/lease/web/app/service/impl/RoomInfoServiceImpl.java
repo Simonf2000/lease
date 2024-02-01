@@ -54,6 +54,7 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     private LeaseTermService leaseTermService;
     @Autowired
     private FeeValueService feeValueService;
+    @Lazy
     @Autowired
     private LeaseAgreementService leaseAgreementService;
 
@@ -131,6 +132,11 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     @Override
     public void pageItemByApartmentId(Page<RoomItemVo> page, Long id) {
         roomInfoMapper.pageItemByApartmentId(page, id);
+    }
+
+    @Override
+    public RoomInfo selectRoomById(Long roomId) {
+        return roomInfoMapper.selectRoomById(roomId);
     }
 }
 

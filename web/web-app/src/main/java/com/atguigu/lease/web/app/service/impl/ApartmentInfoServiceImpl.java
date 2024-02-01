@@ -38,7 +38,6 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     @Autowired
     private FacilityInfoService facilityInfoService;
 
-
     @Override
     public ApartmentItemVo getApartmentItemVoById(Long id) {
 
@@ -89,6 +88,11 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         appApartmentDetailVo.setFacilityInfoList(facilityInfoList);
         appApartmentDetailVo.setMinRent(minRent);
         return appApartmentDetailVo;
+    }
+
+    @Override
+    public ApartmentInfo selectApartmentById(Long apartmentId) {
+        return apartmentInfoMapper.selectApartmentById(apartmentId);
     }
 }
 

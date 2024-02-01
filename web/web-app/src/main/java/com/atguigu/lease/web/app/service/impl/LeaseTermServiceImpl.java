@@ -24,6 +24,11 @@ public class LeaseTermServiceImpl extends ServiceImpl<LeaseTermMapper, LeaseTerm
     public List<LeaseTerm> selectListByRoomId(Long id) {
         return leaseTermMapper.selectListByRoomId(id);
     }
+
+    @Override
+    public LeaseTerm selectLeaseTermById(Long leaseTermId) {
+        return leaseTermMapper.selectLeaseTermById(leaseTermId);
+    }
 }
 
 
