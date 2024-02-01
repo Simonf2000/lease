@@ -1,5 +1,6 @@
 package com.atguigu.lease.web.app.service.impl;
 
+import com.atguigu.lease.common.context.LoginUserContext;
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.model.enums.LeaseStatus;
@@ -55,6 +56,9 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     private FeeValueService feeValueService;
     @Autowired
     private LeaseAgreementService leaseAgreementService;
+
+    @Autowired
+    private BrowsingHistoryService browsingHistoryService;
 
 
     @Override
@@ -113,6 +117,8 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
         appRoomDetailVo.setPaymentTypeList(paymentTypeList);
         appRoomDetailVo.setFeeValueVoList(feeValueVoList);
         appRoomDetailVo.setLeaseTermList(leaseTermList);
+
+        browsingHistoryService.saveHistory(LoginUserContext.getLoginUser().getUserId(), id);
 
         return appRoomDetailVo;
     }

@@ -5,6 +5,7 @@ import com.atguigu.lease.web.app.mapper.BrowsingHistoryMapper;
 import com.atguigu.lease.web.app.service.BrowsingHistoryService;
 import com.atguigu.lease.web.app.vo.history.HistoryItemVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +30,28 @@ public class BrowsingHistoryServiceImpl extends ServiceImpl<BrowsingHistoryMappe
     @Override
     public void pageHistoryItemByUserId(Page<HistoryItemVo> page, Long userId) {
          browsingHistoryMapper.pageHistoryItemByUserId(page, userId);
+    }
+    @Async
+    @Override
+    public void saveHistory(Long userId, Long id) {
+        BrowsingHistory browsingHistory = new BrowsingHistory();
+        browsingHistory.setUserId(userId);
+        browsingHistory.setRoomId(id);
+        browsingHistory.setBrowseTime(new Date());
+
+        LambdaQueryWrapper<BrowsingHistory> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(BrowsingHistory::getUserId, userId);
+        queryWrapper.eq(BrowsingHistory::getRoomId, id);
+        Long count = browsingHistoryMapper.selectCount(queryWrapper);
+
+        if (count > 0) {
+            LambdaUpdateWrapper<BrowsingHistory> updateWrapper = new LambdaUpdateWrapper<>();
+            updateWrapper.eq(BrowsingHistory::getUserId, userId);
+            updateWrapper.eq(BrowsingHistory::getRoomId, id);
+            browsingHistoryMapper.update(browsingHistory, updateWrapper);
+        } else {
+            this.save(browsingHistory);
+        }
     }
 }
 
