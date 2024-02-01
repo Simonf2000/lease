@@ -23,4 +23,6 @@ public interface RoomInfoService extends IService<RoomInfo> {
     RoomDetailVo getRoomDetailById(Long id);
 
     BigDecimal selectMinRentByApartmentId(Long id);
+
+    void pageItemByApartmentId(Page<RoomItemVo> page, Long id);
 }

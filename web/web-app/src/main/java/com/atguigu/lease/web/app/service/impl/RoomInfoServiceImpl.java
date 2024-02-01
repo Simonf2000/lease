@@ -121,6 +121,11 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     public BigDecimal selectMinRentByApartmentId(Long id) {
         return roomInfoMapper.selectMinRentByApartmentId(id);
     }
+
+    @Override
+    public void pageItemByApartmentId(Page<RoomItemVo> page, Long id) {
+        roomInfoMapper.pageItemByApartmentId(page, id);
+    }
 }
 
 

@@ -24,4 +24,6 @@ public interface RoomInfoMapper extends BaseMapper<RoomInfo> {
     RoomInfo selectRoomById(Long id);
 
     BigDecimal selectMinRentByApartmentId(Long id);
+
+    IPage<RoomItemVo> pageItemByApartmentId(Page<RoomItemVo> page, Long id);
 }
