@@ -13,4 +13,6 @@ import java.util.List;
 public interface FacilityInfoService extends IService<FacilityInfo> {
 
     List<FacilityInfo> selectListByRoomId(Long id);
+
+    List<FacilityInfo> selectListByApartmentId(Long id);
 }

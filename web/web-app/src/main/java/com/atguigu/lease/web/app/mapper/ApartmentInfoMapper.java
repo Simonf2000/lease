@@ -16,6 +16,8 @@ public interface ApartmentInfoMapper extends BaseMapper<ApartmentInfo> {
 
 
     ApartmentInfo selectApartmentById(Long id);
+
+    ApartmentInfo selectApartmentDetailedById(Long id);
 }
 
 

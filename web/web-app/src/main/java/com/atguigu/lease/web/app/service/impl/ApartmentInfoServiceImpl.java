@@ -6,10 +6,7 @@ import com.atguigu.lease.model.entity.GraphInfo;
 import com.atguigu.lease.model.entity.LabelInfo;
 import com.atguigu.lease.model.enums.ItemType;
 import com.atguigu.lease.web.app.mapper.*;
-import com.atguigu.lease.web.app.service.ApartmentInfoService;
-import com.atguigu.lease.web.app.service.GraphInfoService;
-import com.atguigu.lease.web.app.service.LabelInfoService;
-import com.atguigu.lease.web.app.service.RoomInfoService;
+import com.atguigu.lease.web.app.service.*;
 import com.atguigu.lease.web.app.vo.apartment.ApartmentDetailVo;
 import com.atguigu.lease.web.app.vo.apartment.ApartmentItemVo;
 import com.atguigu.lease.web.app.vo.graph.GraphVo;
@@ -38,6 +35,9 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     @Autowired
     private RoomInfoService roomInfoService;
 
+    @Autowired
+    private FacilityInfoService facilityInfoService;
+
 
     @Override
     public ApartmentItemVo getApartmentItemVoById(Long id) {
@@ -60,6 +60,36 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         return apartmentItemVo;
     }
 
+    @Override
+    public ApartmentDetailVo getApartmentDetailById(Long id) {
+        //1.查询ApartmentInfo
+        ApartmentInfo apartmentInfo = apartmentInfoMapper.selectApartmentDetailedById(id);
+        if (apartmentInfo == null) {
+            return null;
+        }
+
+        //2.查询GraphInfo
+        List<GraphVo> graphVoList = graphInfoService.selectListByItemTypeAndId(ItemType.APARTMENT, id);
+
+        //3.查询LabelInfo
+        List<LabelInfo> labelInfoList = labelInfoService.selectListByApartmentId(id);
+
+        //4.查询FacilityInfo
+        List<FacilityInfo> facilityInfoList = facilityInfoService.selectListByApartmentId(id);
+
+        //5.查询公寓最低房租
+        BigDecimal minRent = roomInfoService.selectMinRentByApartmentId(id);
+
+        ApartmentDetailVo appApartmentDetailVo = new ApartmentDetailVo();
+
+        BeanUtils.copyProperties(apartmentInfo, appApartmentDetailVo);
+        appApartmentDetailVo.setIsDelete(apartmentInfo.getIsDeleted() == 1);
+        appApartmentDetailVo.setGraphVoList(graphVoList);
+        appApartmentDetailVo.setLabelInfoList(labelInfoList);
+        appApartmentDetailVo.setFacilityInfoList(facilityInfoList);
+        appApartmentDetailVo.setMinRent(minRent);
+        return appApartmentDetailVo;
+    }
 }
 
 

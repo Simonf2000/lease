@@ -23,6 +23,11 @@ public class FacilityInfoServiceImpl extends ServiceImpl<FacilityInfoMapper, Fac
     public List<FacilityInfo> selectListByRoomId(Long id) {
         return facilityInfoMapper.selectListByRoomId(id);
     }
+
+    @Override
+    public List<FacilityInfo> selectListByApartmentId(Long id) {
+        return facilityInfoMapper.selectListByApartmentId(id);
+    }
 }
 
 
