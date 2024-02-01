@@ -28,6 +28,11 @@ public class PaymentTypeServiceImpl extends ServiceImpl<PaymentTypeMapper, Payme
     public PaymentType selectPaymentTypeById(Long paymentTypeId) {
         return paymentTypeMapper.selectPaymentTypeById(paymentTypeId);
     }
+
+    @Override
+    public List<PaymentType> listByRoomId(Long id) {
+        return paymentTypeMapper.selectListByRoomId(id);
+    }
 }
 
 
